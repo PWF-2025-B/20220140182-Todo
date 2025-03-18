@@ -19,6 +19,7 @@
                         {{ __('Todo') }}
                     </x-nav-link>
                     <x-nav-link :href="route('user.index')" :active="request()->routeIs('user.index')">
+
                         {{ __('User') }}
                     </x-nav-link>
                 </div>
@@ -95,7 +96,6 @@
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
-
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
