@@ -62,33 +62,59 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($users as $data)
+                            @forelse ($users as $user)
                                 <tr class="odd:bg-white odd:dark:bg-gray-800 even:bg-gray-50 even:dark:bg-gray-700">
                                     <td scope="row" class="px-6 py-4 font-medium whitespace-nowrap dark:text-white">
-                                        {{ $data->id }}
+                                        {{ $user->id }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ $data->name }}
+                                        {{ $user->name }}
                                     </td>
                                     <td class="hidden px-6 py-4 md:block">
-                                        {{ $data->email }}
+                                        {{ $user->email }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <p>
-                                            {{ $data->todo->count() }}
+                                            {{ $user->todo->count() }}
                                             <span>
                                                 <span class="text-green-600 dark:text-green-400">
-                                                    ({{ $data->todo->where('is_done', true)->count() }}
+                                                    ({{ $user->todo->where('is_done', true)->count() }}
                                                 </span>
                                                 /
                                                 <span class="text-blue-600 dark:text-blue-400">
-                                                    {{ $data->todo->where('is_done', false)->count() }})
+                                                    {{ $user->todo->where('is_done', false)->count() }})
                                                 </span>
                                             </span>
                                         </p>
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{-- Add action buttons here if necessary --}}
+                                        <div class="flex space-x-3">
+                                            @if ($user->is_admin)
+                                                <form action="{{ route('user.removeadmin', $user) }}" method="POST">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="text-blue-600 dark:text-blue-400 whitespace-nowrap">
+                                                        Remove Admin
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <form action="{{ route('user.makeadmin', $user) }}" method="POST">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="text-red-600 dark:text-red-400 whitespace-nowrap">
+                                                        Make Admin
+                                                    </button>
+                                                </form>
+                                            @endif
+
+                                            <form action="{{ route('user.destroy', $user) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-600 dark:text-red-400 whitespace-nowrap">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
