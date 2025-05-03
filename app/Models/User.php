@@ -45,6 +45,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    
+    public function is_admin()
+    {
+        return $this->role === 'admin'; 
+    }
+
     public function todo()
     {
         return $this->hasMany(Todo::class);

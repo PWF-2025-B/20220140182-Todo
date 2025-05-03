@@ -15,9 +15,9 @@ class Admin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user() && $request->user()->isAdmin()) {
+        if ($request->user() && $request->user()->is_admin) {
             return $next($request);
         }
-        return redirect()->route('/dahsboard');
+        return redirect()->route('dashboard');
     }
 }

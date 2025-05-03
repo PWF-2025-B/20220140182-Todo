@@ -1,8 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-        git rebase --continue
-        {{ __('User') }}
+            {{ __('User') }}
         </h2>
     </x-slot>
 
@@ -83,7 +82,7 @@
                                                 </span>
                                                 /
                                                 <span class="text-blue-600 dark:text-blue-400">
-                                                    {{ $user->todo->where('is_done', false)->count() }})
+                                                    {{ $user->todo->where('is_done', false)->count() }} )
                                                 </span>
                                             </span>
                                         </p>
