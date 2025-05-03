@@ -37,10 +37,19 @@ Route::middleware('auth')->group(function () {
     Route::delete('/todo', [TodoController::class, 'destroyCompleted'])->name('todo.deleteallcompleted');
 
     // Manajemen user (jika admin)
+    // Route::get('/user', [UserController::class, 'index'])->name('user.index');
+    // Route::patch('/user/{user}/makeadmin', [UserController::class, 'makeadmin'])->name('user.makeadmin');
+    // Route::patch('/user/{user}/removeadmin', [UserController::class, 'removeadmin'])->name('user.removeadmin');
+    // Route::delete('/user/{user}', [UserController::class, 'destroy'])->name('user.destroy');
+});
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::resource('user', UserController::class)->except(['show']);
     Route::get('/user', [UserController::class, 'index'])->name('user.index');
     Route::patch('/user/{user}/makeadmin', [UserController::class, 'makeadmin'])->name('user.makeadmin');
     Route::patch('/user/{user}/removeadmin', [UserController::class, 'removeadmin'])->name('user.removeadmin');
     Route::delete('/user/{user}', [UserController::class, 'destroy'])->name('user.destroy');
 });
+
 
 require __DIR__.'/auth.php';
