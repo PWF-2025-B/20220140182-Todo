@@ -10,23 +10,29 @@
                     </a>
                 </div>
 
+
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
+
                     <x-nav-link :href="route('todo.index')" :active="request()->routeIs('todo.index')">
                         {{ __('Todo') }}
                     </x-nav-link>
 
-                    @can('admin')
-                        <x-nav-link :href="route('user.index')" :active="request()->routeIs('user.index')">
-                            {{ __('User') }}
-                        </x-nav-link>
-                    @endcan
+
+                    @auth
+                        @if(Auth::user()->is_admin)
+                            <x-nav-link :href="route('user.index')" :active="request()->routeIs('user.index')">
+                                {{ __('User') }}
+                            </x-nav-link>
+                        @endif
+                    @endauth
                 </div>
             </div>
+
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
@@ -42,10 +48,12 @@
                         </button>
                     </x-slot>
 
+
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
+
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
@@ -57,6 +65,7 @@
                     </x-slot>
                 </x-dropdown>
             </div>
+
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
@@ -70,23 +79,21 @@
         </div>
     </div>
 
+
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-
             <x-responsive-nav-link :href="route('todo.index')" :active="request()->routeIs('todo.index')">
                 {{ __('Todo') }}
             </x-responsive-nav-link>
-
-            @can('admin')
-                <x-responsive-nav-link :href="route('user.index')" :active="request()->routeIs('user.index')">
-                    {{ __('User') }}
-                </x-responsive-nav-link>
-            @endcan
+            <x-responsive-nav-link :href="route('user.index')" :active="request()->routeIs('user.index')">
+                {{ __('User') }}
+            </x-responsive-nav-link>
         </div>
+
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
@@ -95,10 +102,12 @@
                 <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
             </div>
 
+
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
+
 
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
