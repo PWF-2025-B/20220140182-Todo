@@ -53,5 +53,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('category', CategoryController::class);
 });
 
+Route::get('/pzn', function (){
+    return "Hello Programmer Zaman Now";
+});
 
 require __DIR__.'/auth.php';

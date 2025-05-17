@@ -14,15 +14,20 @@ class UserController extends Controller
         $query = User::where('id', '!=', 1);
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
+            $users = User::with('todo')->where(function ($query) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%");
             });
+
+        } else {
+            $users = User::with('todo')->where('id', '!=', 1)
+                         ->orderBy('name')
+                         ->paginate(20);
         }
 
-        $users = $query->orderBy('name')
-                       ->paginate(20)
-                       ->withQueryString();
+        // $users = $query->orderBy('name')
+        //                ->paginate(20)
+        //                ->withQueryString();
 
         return view('user.index', compact('users'));
     }
