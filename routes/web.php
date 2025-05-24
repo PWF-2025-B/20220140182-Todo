@@ -20,7 +20,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Semua route yang butuh otentikasi user
-Route::middleware('auth')->group(function () {
+Route::middleware('auth', 'verified')->group(function () {
     // Profil user
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -53,8 +53,16 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('category', CategoryController::class);
 });
 
+
+
 Route::get('/pzn', function (){
     return "Hello Programmer Zaman Now";
+});
+
+Route::redirect('/youtube', '/pzn');
+
+Route::fallback(function (){
+    return "404 by Programmer Zaman Now";
 });
 
 require __DIR__.'/auth.php';
