@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
 {
@@ -16,24 +15,20 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        // Validasi input
-        $validator = Validator::make($request->all(), [
+        $data = $request->validate([
             'email' => 'required|email',
             'password' => 'required|string|min:6',
         ]);
 
-        if ($validator->fails()) {
+        if (empty($data['email']) || empty($data['password'])) {
             return response()->json([
-                'status_code' => 422,
-                'message' => 'Validasi gagal.',
-                'errors' => $validator->errors(),
-            ], 422);
+                'status_code' => 400,
+                'message' => 'Email dan password harus diisi.',
+            ], 400);
         }
 
-        $credentials = $request->only('email', 'password');
-
         try {
-            if (!$token = Auth::guard('api')->attempt($credentials)) {
+            if (!$token = Auth::guard('api')->attempt($data)) {
                 return response()->json([
                     'status_code' => 401,
                     'message' => 'Email atau password salah.',
@@ -41,7 +36,6 @@ class AuthController extends Controller
             }
 
             $user = Auth::guard('api')->user();
-
             return response()->json([
                 'status_code' => 200,
                 'message' => 'Login berhasil.',
@@ -50,41 +44,36 @@ class AuthController extends Controller
                         'id' => $user->id,
                         'name' => $user->name,
                         'email' => $user->email,
-                        'is_admin' => $user->is_admin ?? false,
+                        'is_admin' => $user->is_admin,
                     ],
                     'token' => $token,
                 ],
-            ]);
-        } catch (JWTException $e) {
-            return response()->json([
-                'status_code' => 500,
-                'message' => 'Gagal membuat token.',
-                'error' => $e->getMessage(),
-            ], 500);
-        } catch (\Exception $e) {
+            ], 200);
+
+        } catch (Exception $e) {
             return response()->json([
                 'status_code' => 500,
                 'message' => 'Terjadi kesalahan.',
-                'error' => $e->getMessage(), // untuk debugging
             ], 500);
         }
     }
 
     /**
-     * Logout user dari sistem.
+     * Logout user yang sedang login.
      */
-    public function logout(Request $request)
+    public function logout()
     {
-        try {
-            Auth::guard('api')->logout();
-            return response()->json([
-                'message' => 'Logout berhasil.',
-            ]);
-        } catch (JWTException $e) {
-            return response()->json([
-                'message' => 'Gagal logout.',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+       try{
+        JWTAuth::invalidate(JWTAuth::getToken());
+        return response()->json([
+            'status_code' => 200,
+            'message' => 'Logout berhasil. Token Telah dihapus.',
+        ], 200);
+       }catch (Exception $e) {
+        return response()->json([
+            'status_code' => 500,
+            'message' => 'Terjadi kesalahan saat logout.',
+        ], 500);
+       }
     }
 }
